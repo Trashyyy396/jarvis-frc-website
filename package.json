@@ -1,0 +1,11 @@
+{
+  "name": "jarvis-frc-website",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "prepare-deploy": "node scripts/prepare-deploy.mjs"
+  },
+  "dependencies": {
+    "google-auth-library": "^9.15.1"
+  }
+}

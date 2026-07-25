@@ -5,6 +5,11 @@ on:
     branches:
       - main
 
+env:
+  FIREBASE_PROJECT_ID: wheelhouse-foundation-website
+  FIREBASE_SITE_ID: wheelhouse-foundation-website
+  FIREBASE_LIVE_ORIGIN: https://wheelhouse-foundation-website.web.app
+
 permissions:
   contents: read
 
@@ -15,6 +20,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Validate secrets
+        run: |
+          if [ -z "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}" ]; then
+            echo "::error::Missing GitHub secret FIREBASE_SERVICE_ACCOUNT."
+            echo "Create a Firebase service account JSON key and add the full file contents as a repository secret."
+            echo "See docs/SETUP_SECRETS.md in this repo for step-by-step instructions."
+            exit 1
+          fi
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -32,12 +46,11 @@ jobs:
 
       - name: Prepare merged deploy bundle
         env:
-          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-          FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
-          FIREBASE_SITE_ID: wheelhouse-foundation-website
-          FIREBASE_LIVE_ORIGIN: https://www.wheelhousefoundation.com
+          FIREBASE_PROJECT_ID: ${{ env.FIREBASE_PROJECT_ID }}
+          FIREBASE_SITE_ID: ${{ env.FIREBASE_SITE_ID }}
+          FIREBASE_LIVE_ORIGIN: ${{ env.FIREBASE_LIVE_ORIGIN }}
         run: npm run prepare-deploy
 
       - name: Deploy to Firebase Hosting
         working-directory: deploy
-        run: npx firebase-tools@latest deploy --only hosting --project "${{ secrets.FIREBASE_PROJECT_ID }}"
+        run: npx firebase-tools@latest deploy --only hosting --project "${{ env.FIREBASE_PROJECT_ID }}"

@@ -2,17 +2,11 @@
   "hosting": {
     "public": "public",
     "cleanUrls": true,
+    "trailingSlash": true,
     "ignore": [
       "firebase.json",
       "**/.*",
       "**/node_modules/**"
-    ],
-    "redirects": [
-      {
-        "source": "/jarvis",
-        "destination": "/jarvis/",
-        "type": 301
-      }
     ]
   }
 }

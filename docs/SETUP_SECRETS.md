@@ -1,31 +1,55 @@
-# One-time setup: Firebase + GitHub secrets
+# One-time setup: Firebase GitHub secret
 
 This repo deploys Jarvis to `https://www.wheelhousefoundation.com/jarvis/` by merging
 `index.html` into the live Wheelhouse Firebase Hosting site.
 
-## 1. Create a Firebase service account
+## Required GitHub secret
 
-1. Open [Google Cloud Console IAM](https://console.cloud.google.com/iam-admin/serviceaccounts?project=wheelhouse-foundation-website).
-2. Create a service account named `github-jarvis-deploy`.
-3. Grant the role **Firebase Hosting Admin**.
-4. Create and download a JSON key.
-
-## 2. Add GitHub Actions secrets
-
-In **Trashyyy396/jarvis-frc-website** → Settings → Secrets and variables → Actions:
+The deploy workflow needs **one** repository secret:
 
 | Secret | Value |
 |--------|-------|
-| `FIREBASE_SERVICE_ACCOUNT` | Full contents of the JSON key file |
-| `FIREBASE_PROJECT_ID` | `wheelhouse-foundation-website` |
+| `FIREBASE_SERVICE_ACCOUNT` | Full contents of a Google Cloud service account JSON key |
 
-## 3. Verify
+If this secret is missing, the workflow fails with:
 
-Push to `main`. The workflow should:
+`the GitHub Action workflow must specify exactly one of "workload_identity_provider" or "credentials_json"`
 
-1. Download the current live site
-2. Copy `index.html` to `/jarvis/`
-3. Deploy the merged bundle
+That means the secret has not been added yet.
+
+## Create the service account
+
+1. Open [Google Cloud Console → Service Accounts](https://console.cloud.google.com/iam-admin/serviceaccounts?project=wheelhouse-foundation-website).
+2. Click **Create service account**.
+   - Name: `github-jarvis-deploy`
+3. Grant this role:
+   - **Firebase Hosting Admin**
+4. Open the new service account → **Keys** → **Add key** → **Create new key** → **JSON**.
+5. Save the downloaded `.json` file.
+
+## Add the secret in GitHub
+
+1. Open [Trashyyy396/jarvis-frc-website → Settings → Secrets and variables → Actions](https://github.com/Trashyyy396/jarvis-frc-website/settings/secrets/actions).
+2. Click **New repository secret**.
+3. Name: `FIREBASE_SERVICE_ACCOUNT`
+4. Value: paste the **entire JSON file** contents, starting with `{` and ending with `}`.
+5. Save.
+
+## Re-run deploy
+
+After the secret is saved:
+
+1. Go to **Actions** in the jarvis-frc-website repo.
+2. Open the failed **Deploy Jarvis to /jarvis** run.
+3. Click **Re-run all jobs**.
+
+Or push any commit to `main`.
+
+## Custom domain note
+
+Jarvis is deployed to Firebase Hosting at `https://wheelhouse-foundation-website.web.app/jarvis/`.
+If `www.wheelhousefoundation.com` is served by Vercel, add a `/jarvis` rewrite in the main Wheelhouse
+site's Vercel config so the custom domain path proxies to Firebase.
 
 ## Local test (optional)
 

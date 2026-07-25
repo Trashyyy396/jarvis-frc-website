@@ -12,20 +12,18 @@ const LIVE_ORIGIN =
   process.env.FIREBASE_LIVE_ORIGIN ?? `https://${SITE_ID}.web.app`;
 const HOSTING_API = "https://firebasehosting.googleapis.com/v1beta1";
 
-function getCredentials() {
+function getAuthOptions() {
   const raw = process.env.FIREBASE_SERVICE_ACCOUNT;
-  if (!raw) {
-    throw new Error(
-      "FIREBASE_SERVICE_ACCOUNT is required (JSON service account key)."
-    );
+  if (raw) {
+    return { credentials: JSON.parse(raw) };
   }
 
-  return JSON.parse(raw);
+  return {};
 }
 
 async function createAuthClient() {
   const auth = new GoogleAuth({
-    credentials: getCredentials(),
+    ...getAuthOptions(),
     scopes: ["https://www.googleapis.com/auth/firebase"],
   });
 
@@ -126,7 +124,7 @@ async function copyJarvisSite() {
 }
 
 async function prepareDeployDirectory() {
-  await fs.rm(DEPLOY_DIR, { recursive: true, force: true });
+  await fs.rm(PUBLIC_DIR, { recursive: true, force: true });
   await fs.mkdir(PUBLIC_DIR, { recursive: true });
 
   const client = await createAuthClient();

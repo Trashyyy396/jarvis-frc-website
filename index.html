@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>J.A.R.V.I.S — FRC Robotics | Coppell, TX</title>
+<title>J.A.R.V.I.S — FRC Robotics | Dallas–Fort Worth, TX</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
@@ -15,8 +15,8 @@
     --gold-bright: #F0C040;
     --cyan: #4FC3E8;
     --cyan-bright: #8BE3FF;
-    --silver: #A8B2BD;
-    --silver-dim: #5A6472;
+    --silver: #D4DBE3;
+    --silver-dim: #A8B4C4;
     --black: #080A0C;
     --dark: #0D1117;
     --dark2: #141921;
@@ -34,9 +34,13 @@
     background: var(--black);
     color: var(--silver);
     font-family: 'Rajdhani', sans-serif;
-    font-size: 16px;
-    line-height: 1.6;
+    font-size: 19px;
+    line-height: 1.7;
     overflow-x: hidden;
+  }
+  /* color wash sits above the solid body bg but below content */
+  @media (hover: hover) and (min-width: 769px) {
+    body, a, button { cursor: none; }
   }
 
   body::before {
@@ -86,6 +90,20 @@
     transition: opacity 0.3s;
   }
   .nav-reactor.visible { opacity: 1; }
+  .nav-team-num {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--cyan-bright);
+    letter-spacing: 0.08em;
+    padding: 3px 9px;
+    border: 1px solid rgba(139,227,255,0.4);
+    border-radius: 4px;
+    margin-left: 8px;
+    vertical-align: middle;
+    background: rgba(79,195,232,0.08);
+    box-shadow: 0 0 12px rgba(79,195,232,0.15);
+  }
 
   .nav-links { display: flex; gap: 2.5rem; list-style: none; }
 
@@ -119,7 +137,7 @@
      ════════════════════════════════════════════ */
   .hero-stage {
     position: relative;
-    height: 460vh;            /* longer stage so the pull-forward rush has room */
+    height: 620vh;            /* longer stage = slower, bigger scroll sequence */
   }
 
   .hero-sticky {
@@ -210,9 +228,33 @@
   }
   .hero-title span { color: var(--cyan-bright); }
 
+  .hero-team-num {
+    font-family: 'Orbitron', monospace;
+    font-weight: 700;
+    font-size: clamp(1.1rem, 2.4vw, 1.7rem);
+    letter-spacing: 0.22em;
+    color: var(--silver);
+    margin-top: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6em;
+  }
+  .hero-team-num span {
+    font-size: clamp(1.8rem, 4.5vw, 3.4rem);
+    font-weight: 900;
+    letter-spacing: 0.06em;
+    background: linear-gradient(90deg, var(--cyan-bright), var(--gold-bright));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 30px rgba(139,227,255,0.3);
+    filter: drop-shadow(0 0 18px rgba(139,227,255,0.35));
+  }
+
   .hero-sub {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.72rem;
+    font-size: 0.82rem;
     letter-spacing: 0.25em;
     color: var(--silver-dim);
     margin-top: 1rem;
@@ -303,6 +345,8 @@
     position: relative;
     z-index: 1;
     padding: 7rem 2rem;
+    content-visibility: auto;
+    contain-intrinsic-size: auto 800px;
   }
   .section-inner { max-width: 1100px; margin: 0 auto; }
 
@@ -375,7 +419,7 @@
   .hud-divider-dot { width:6px; height:6px; background: var(--gold); transform: rotate(45deg); box-shadow: var(--glow-gold); }
 
   /* ── ABOUT ── */
-  #about { background: var(--dark); }
+  #about { background: rgba(13,17,23,0.82); }
   #about::before { content:''; position:absolute; top:0; left:0; right:0; height:1px; background: linear-gradient(to right, transparent, var(--border), transparent); }
 
   .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; margin-top: 3rem; }
@@ -390,7 +434,7 @@
   .stat-label { font-family: 'Share Tech Mono', monospace; font-size: 0.65rem; letter-spacing: 0.15em; color: var(--silver-dim); text-transform: uppercase; margin-top: 0.4rem; display: block; }
 
   /* ── PILLARS ── */
-  #pillars { background: var(--black); }
+  #pillars { background: rgba(8,10,12,0.78); }
   .pillars-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 3rem; }
   .pillar-card { background: var(--dark2); border: 1px solid var(--border); padding: 2rem; position: relative; overflow: hidden; transition: border-color 0.3s, transform 0.3s; }
   .pillar-card::after { content:''; position:absolute; bottom:0; left:0; right:0; height:2px; background: linear-gradient(to right, var(--red), var(--gold)); transform: scaleX(0); transform-origin: left; transition: transform 0.4s; }
@@ -399,10 +443,159 @@
   .pillar-icon { font-family: 'Orbitron', monospace; font-size: 0.65rem; letter-spacing: 0.2em; color: var(--red-bright); margin-bottom: 1rem; display: flex; align-items: center; gap: 8px; }
   .pillar-icon::before { content:''; width:20px; height:1px; background: var(--red); }
   .pillar-title { font-family: 'Orbitron', monospace; font-size: 1rem; font-weight: 700; color: #fff; margin-bottom: 0.75rem; letter-spacing: 0.05em; }
-  .pillar-body { font-size: 0.95rem; color: var(--silver-dim); line-height: 1.7; }
+  .pillar-body { font-size: 1.02rem; color: var(--silver); line-height: 1.7; }
+
+  /* ── OUR IMPACT band ── */
+  .impact-band {
+    margin-top: 2.5rem;
+    background: linear-gradient(135deg, var(--dark2), var(--dark));
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--cyan);
+    padding: 2rem 2.25rem;
+    position: relative;
+  }
+  .impact-head { margin-bottom: 1.25rem; }
+  .impact-tag {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.7rem; letter-spacing: 0.25em;
+    color: var(--cyan-bright); text-transform: uppercase;
+  }
+  .impact-list {
+    list-style: none;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.85rem 2.5rem;
+  }
+  .impact-list li {
+    position: relative;
+    padding-left: 1.5rem;
+    font-size: 0.98rem;
+    color: var(--silver);
+    line-height: 1.5;
+  }
+  .impact-list li::before {
+    content: '▹';
+    position: absolute; left: 0; top: 0;
+    color: var(--gold-bright);
+    font-size: 0.9rem;
+  }
+  .impact-list li strong { color: var(--cyan-bright); font-weight: 700; }
+  @media (max-width: 980px) and (min-width: 769px) {
+    .mentor-grid { grid-template-columns: repeat(2, 1fr); }
+    .tier-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 768px) {
+    .impact-list { grid-template-columns: 1fr; }
+    .impact-band { padding: 1.5rem 1.5rem; }
+    .tier-grid { grid-template-columns: 1fr; }
+    .mentor-grid { grid-template-columns: 1fr; }
+    .prev-sponsor-logos { gap: 1.5rem; }
+  }
+
+  /* ── MENTORS ── */
+  #mentors { background: rgba(13,17,23,0.80); }
+  #mentors::before { content:''; position:absolute; top:0; left:0; right:0; height:1px; background: linear-gradient(to right, transparent, var(--border), transparent); }
+  .mentors-intro { font-size: 1.05rem; color: var(--silver); max-width: 680px; line-height: 1.8; margin-top: 1rem; }
+  .mentor-grid {
+    margin-top: 3rem;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+  .mentor-card {
+    background: var(--dark2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem 1.75rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.35s cubic-bezier(.2,.7,.2,1), border-color 0.35s, box-shadow 0.35s;
+  }
+  .mentor-card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: linear-gradient(110deg, transparent, rgba(139,227,255,0.06), transparent);
+    transition: left 0.7s ease;
+    pointer-events: none;
+  }
+  .mentor-card:hover { transform: translateY(-8px); border-color: var(--cyan); box-shadow: 0 16px 40px rgba(0,0,0,0.45), 0 0 30px rgba(79,195,232,0.12); }
+  .mentor-card:hover::after { left: 100%; }
+
+  .mentor-avatar {
+    width: 84px; height: 84px;
+    margin: 0 auto 1.25rem;
+    border-radius: 50%;
+    background: radial-gradient(circle at 50% 40%, var(--dark3), var(--dark));
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    border: 1px solid var(--border);
+  }
+  .mentor-avatar span {
+    font-family: 'Orbitron', monospace;
+    font-size: 2rem; font-weight: 900;
+    color: var(--silver-dim);
+    transition: color 0.35s;
+  }
+  .mentor-card:hover .mentor-avatar span { color: var(--cyan-bright); }
+  .avatar-ring {
+    position: absolute;
+    inset: -5px;
+    border-radius: 50%;
+    border: 1.5px dashed rgba(79,195,232,0.3);
+    animation: avatarSpin 18s linear infinite;
+  }
+  @keyframes avatarSpin { to { transform: rotate(360deg); } }
+  .mentor-card:hover .avatar-ring { border-color: var(--cyan); }
+
+  .mentor-name {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.05rem; font-weight: 700;
+    color: #fff; letter-spacing: 0.04em;
+    margin-bottom: 0.35rem;
+  }
+  .mentor-role {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.68rem; letter-spacing: 0.18em;
+    color: var(--gold); text-transform: uppercase;
+    margin-bottom: 0.9rem;
+  }
+  .mentor-bio { font-size: 0.92rem; color: var(--silver-dim); line-height: 1.6; }
+
+  /* the "become a mentor" call-to-action card */
+  .mentor-join {
+    background: transparent;
+    border: 1px dashed var(--border-red);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+  }
+  .mentor-join-icon {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    border: 1.5px solid var(--red-bright);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2rem; color: var(--red-bright); font-weight: 300;
+    margin-bottom: 1rem;
+    transition: transform 0.35s, background 0.35s, color 0.35s;
+  }
+  .mentor-join:hover { border-color: var(--red-bright); transform: translateY(-8px); }
+  .mentor-join:hover .mentor-join-icon { transform: rotate(90deg) scale(1.1); background: var(--red); color: #fff; }
+  .mentor-join-btn {
+    margin-top: 1.1rem;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700; font-size: 0.78rem;
+    letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--gold-bright); text-decoration: none;
+    padding: 0.6rem 1.5rem;
+    border: 1px solid var(--gold);
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+    transition: background 0.3s, box-shadow 0.3s;
+  }
+  .mentor-join-btn:hover { background: rgba(212,160,23,0.12); box-shadow: var(--glow-gold); }
 
   /* ── JOIN ── */
-  #join { background: var(--dark); }
+  #join { background: rgba(13,17,23,0.82); }
   #join::before { content:''; position:absolute; top:0; left:0; right:0; height:1px; background: linear-gradient(to right, transparent, var(--border-red), transparent); }
   .join-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; margin-top: 3rem; align-items: start; }
   .subteams { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1.5rem; }
@@ -421,34 +614,88 @@
   .btn-submit:hover { background: var(--red-bright); box-shadow: var(--glow-red); }
 
   /* ── SPONSORS ── */
-  #sponsors { background: var(--black); }
-  .sponsor-intro { font-size: 1.05rem; color: var(--silver); max-width: 600px; line-height: 1.8; margin-top: 1rem; }
-  .sponsor-tiers { margin-top: 3rem; display: flex; flex-direction: column; gap: 2rem; }
-  .tier-label { font-family: 'Share Tech Mono', monospace; font-size: 0.65rem; letter-spacing: 0.25em; margin-bottom: 1rem; display: flex; align-items: center; gap: 10px; }
-  .tier-gold { color: var(--gold-bright); }
-  .tier-silver { color: var(--silver); }
-  .tier-label::after { content:''; flex:1; height:1px; background: currentColor; opacity:0.2; }
-  .sponsor-slots { display: grid; gap: 1rem; }
-  .sponsor-slots.large { grid-template-columns: repeat(2, 1fr); }
-  .sponsor-slots.small { grid-template-columns: repeat(4, 1fr); }
-  .sponsor-slot { background: var(--dark2); border: 1px solid var(--border); aspect-ratio: 3/1.2; display: flex; align-items: center; justify-content: center; position: relative; transition: border-color 0.3s; }
-  .sponsor-slot.filled { border-color: rgba(212,160,23,0.5); }
-  .sponsor-slot .slot-text { font-family: 'Share Tech Mono', monospace; font-size: 0.65rem; letter-spacing: 0.15em; color: var(--silver-dim); text-align: center; }
-  .sponsor-slot .sponsor-name { font-family: 'Orbitron', monospace; font-size: 1rem; font-weight: 700; color: var(--gold-bright); letter-spacing: 0.1em; }
-  .sponsor-slot::before, .sponsor-slot::after { content:''; position:absolute; width:8px; height:8px; border-color: var(--gold); border-style: solid; opacity:0.4; }
-  .sponsor-slot::before { top:4px; left:4px; border-width:1px 0 0 1px; }
-  .sponsor-slot::after { bottom:4px; right:4px; border-width:0 1px 1px 0; }
+  #sponsors { background: rgba(8,10,12,0.78); }
+  .sponsor-intro { font-size: 1.05rem; color: var(--silver); max-width: 640px; line-height: 1.8; margin-top: 1rem; }
+  .sponsor-intro strong { color: var(--cyan-bright); }
+
+  .tier-grid {
+    margin-top: 3rem;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+  }
+  .tier-card {
+    background: var(--dark2);
+    border: 1px solid var(--border);
+    border-top: 3px solid var(--silver-dim);
+    padding: 1.75rem;
+    position: relative;
+    transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+  }
+  .tier-card:hover { transform: translateY(-4px); box-shadow: 0 10px 30px rgba(0,0,0,0.4); }
+  .tier-card.platinum { border-top-color: #C9D2DC; }
+  .tier-card.gold { border-top-color: var(--gold-bright); }
+  .tier-card.silver { border-top-color: var(--silver); }
+  .tier-card.bronze { border-top-color: #CD7F32; }
+  .tier-card.supporter { border-top-color: var(--cyan); }
+  .tier-card.platinum:hover { border-color: #C9D2DC; }
+  .tier-card.gold:hover { border-color: var(--gold-bright); }
+  .tier-name {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.3rem; font-weight: 900;
+    color: #fff; letter-spacing: 0.05em;
+  }
+  .tier-card.platinum .tier-name { color: #E8EEF4; }
+  .tier-card.gold .tier-name { color: var(--gold-bright); }
+  .tier-card.bronze .tier-name { color: #E0995C; }
+  .tier-card.supporter .tier-name { color: var(--cyan-bright); }
+  .tier-price {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.95rem; color: var(--silver);
+    margin: 0.35rem 0 1.1rem;
+  }
+  .tier-benefits { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+  .tier-benefits li {
+    font-size: 0.96rem; color: var(--silver); line-height: 1.55;
+    padding-left: 1.1rem; position: relative;
+  }
+  .tier-benefits li::before { content: '+'; position: absolute; left: 0; color: var(--gold); font-weight: 700; }
+  .tier-benefits li:first-child { color: var(--silver); font-weight: 600; }
+  .tier-benefits li:first-child::before { content: '▹'; color: var(--cyan-bright); }
+  .tier-benefits li strong { color: var(--cyan-bright); font-weight: 700; }
+
+  .note-card { background: transparent; border: 1px dashed var(--border); border-top: 3px solid var(--border); display: flex; flex-direction: column; justify-content: center; }
+  .tier-note-label { font-family: 'Share Tech Mono', monospace; font-size: 0.7rem; letter-spacing: 0.2em; color: var(--gold); text-transform: uppercase; margin-bottom: 0.75rem; }
+  .tier-note { font-size: 0.9rem; color: var(--silver-dim); line-height: 1.6; }
+
+  .prev-sponsors { margin-top: 3rem; text-align: center; }
+  .prev-sponsor-logos { display: flex; justify-content: center; align-items: center; gap: 3rem; flex-wrap: wrap; }
+  .prev-logo {
+    font-family: 'Orbitron', monospace;
+    font-weight: 700; font-size: 1.4rem;
+    letter-spacing: 0.15em;
+    color: var(--silver-dim);
+    opacity: 0.7;
+    transition: opacity 0.3s, color 0.3s;
+  }
+  .prev-logo:hover { opacity: 1; color: var(--silver); }
+
   .partner-cta { margin-top: 3rem; background: var(--dark2); border: 1px solid var(--border-red); padding: 2.5rem; display: flex; align-items: center; justify-content: space-between; gap: 2rem; flex-wrap: wrap; }
   .partner-cta-text h3 { font-family: 'Orbitron', monospace; font-size: 1.1rem; font-weight: 700; color: #fff; margin-bottom: 0.5rem; letter-spacing: 0.05em; }
-  .partner-cta-text p { color: var(--silver-dim); font-size: 0.95rem; max-width: 520px; }
+  .partner-cta-text p { color: var(--silver); font-size: 1rem; max-width: 560px; }
+  .partner-cta-text p strong { color: var(--cyan-bright); }
 
   /* ── FOOTER ── */
-  footer { background: var(--dark); border-top: 1px solid var(--border); padding: 2.5rem 2rem; text-align: center; position: relative; z-index: 1; }
+  footer { background: rgba(13,17,23,0.85); border-top: 1px solid var(--border); padding: 2.5rem 2rem; text-align: center; position: relative; z-index: 1; }
   .footer-logo { font-family: 'Orbitron', monospace; font-size: 1rem; font-weight: 900; color: var(--gold-bright); letter-spacing: 0.2em; margin-bottom: 0.5rem; }
   .footer-sub { font-family: 'Share Tech Mono', monospace; font-size: 0.6rem; letter-spacing: 0.2em; color: var(--silver-dim); }
   .footer-links { display: flex; justify-content: center; gap: 2rem; margin-top: 1.25rem; list-style: none; }
   .footer-links a { font-size: 0.8rem; color: var(--silver-dim); text-decoration: none; letter-spacing: 0.05em; transition: color 0.2s; }
   .footer-links a:hover { color: var(--gold-bright); }
+  .footer-contact { display: flex; justify-content: center; align-items: center; gap: 0.85rem; flex-wrap: wrap; margin-top: 0.9rem; }
+  .footer-contact a { font-size: 0.82rem; color: var(--cyan); text-decoration: none; transition: color 0.2s; }
+  .footer-contact a:hover { color: var(--cyan-bright); }
+  .footer-contact span { color: var(--silver-dim); font-size: 0.7rem; }
 
   .scanlines { position: fixed; inset: 0; background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.05) 2px, rgba(0,0,0,0.05) 4px); pointer-events: none; z-index: 999; }
 
@@ -469,21 +716,435 @@
     .hero-stage { height: 380vh; }
   }
 
+  /* ════════════════════════════════════════════
+     EXTRA ANIMATIONS — the fun layer
+     All transform/opacity/filter based for GPU perf.
+     ════════════════════════════════════════════ */
+
+  /* Animated gradient sweep across section titles */
+  @keyframes titleGradient {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 200% 50%; }
+  }
+  .section-title span {
+    background: linear-gradient(90deg, var(--cyan-bright), var(--gold-bright), var(--cyan-bright));
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: titleGradient 4s linear infinite;
+  }
+
+  /* Stat numbers: subtle living glow */
+  @keyframes statGlow {
+    0%,100% { text-shadow: 0 0 12px rgba(139,227,255,0.3); }
+    50% { text-shadow: 0 0 22px rgba(139,227,255,0.7), 0 0 4px rgba(139,227,255,0.5); }
+  }
+  .stat-num { animation: statGlow 3s ease-in-out infinite; }
+  .stat-cell:nth-child(2) .stat-num { animation-delay: 0.4s; }
+  .stat-cell:nth-child(3) .stat-num { animation-delay: 0.8s; }
+  .stat-cell:nth-child(4) .stat-num { animation-delay: 1.2s; }
+
+  /* Stat cell: animated scanning border on hover */
+  .stat-cell { transition: transform 0.3s; }
+  .stat-cell:hover { transform: translateY(-3px) scale(1.02); z-index: 2; }
+  .stat-cell::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(120deg, transparent 30%, rgba(139,227,255,0.08) 50%, transparent 70%);
+    background-size: 250% 100%;
+    background-position: 200% 0;
+    pointer-events: none;
+    transition: none;
+  }
+  .stat-cell:hover::after { animation: shimmerCell 0.9s ease; }
+  @keyframes shimmerCell { to { background-position: -50% 0; } }
+
+  /* Pillar cards: 3D tilt (JS-driven via CSS vars) + glow */
+  .pillar-card {
+    transform-style: preserve-3d;
+    transform: perspective(800px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) translateZ(0);
+    transition: transform 0.15s ease-out, border-color 0.3s, box-shadow 0.3s;
+  }
+  .pillar-card:hover {
+    box-shadow: 0 18px 40px rgba(0,0,0,0.5), 0 0 30px rgba(79,195,232,0.12);
+  }
+  .pillar-card .pillar-icon, .pillar-card .pillar-title { transform: translateZ(20px); }
+  /* glint that follows tilt */
+  .pillar-card::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(circle at var(--gx,50%) var(--gy,50%), rgba(139,227,255,0.10), transparent 45%);
+    opacity: 0; transition: opacity 0.3s;
+    pointer-events: none;
+  }
+  .pillar-card:hover::before { opacity: 1; }
+
+  /* Pillar icon number: pulses */
+  @keyframes iconBlink { 0%,92%,100% { opacity:1; } 96% { opacity:0.3; } }
+  .pillar-icon { animation: iconBlink 4s steps(1) infinite; }
+
+  /* Tier cards: animated top border glow + lift */
+  @keyframes borderFlow {
+    0% { background-position: 0% 0; }
+    100% { background-position: 200% 0; }
+  }
+  .tier-card { overflow: hidden; }
+  .tier-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, transparent, var(--cyan-bright), transparent);
+    background-size: 200% 100%;
+    opacity: 0;
+    animation: borderFlow 2s linear infinite;
+    transition: opacity 0.3s;
+  }
+  .tier-card:hover::before { opacity: 1; }
+  .tier-card:hover { transform: translateY(-8px) scale(1.015); }
+  .tier-card.platinum { animation: floaty 6s ease-in-out infinite; }
+
+  /* gentle float for the headline tier */
+  @keyframes floaty {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+  }
+
+  /* Subteam rows: slide + glow on hover, staggered pulse */
+  .subteam-row {
+    transition: transform 0.25s, border-color 0.25s, background 0.25s, box-shadow 0.25s;
+  }
+  .subteam-row:hover {
+    transform: translateX(8px);
+    border-left-color: var(--cyan-bright);
+    box-shadow: -4px 0 16px rgba(79,195,232,0.2);
+    background: var(--dark2);
+  }
+  .subteam-tag { transition: transform 0.25s; }
+  .subteam-row:hover .subteam-tag { transform: scale(1.08); }
+
+  /* Impact list items: tick in with a pop, glow on hover */
+  .impact-list li { transition: transform 0.2s, color 0.2s; }
+  .impact-list li:hover { transform: translateX(4px); color: var(--cyan-bright); }
+  @keyframes pulseDot {
+    0%,100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.4); opacity: 0.6; }
+  }
+  .impact-list li::before { display: inline-block; animation: pulseDot 2.5s ease-in-out infinite; }
+  .impact-list li:nth-child(2)::before { animation-delay: 0.3s; }
+  .impact-list li:nth-child(3)::before { animation-delay: 0.6s; }
+  .impact-list li:nth-child(4)::before { animation-delay: 0.9s; }
+  .impact-list li:nth-child(5)::before { animation-delay: 1.2s; }
+  .impact-list li:nth-child(6)::before { animation-delay: 1.5s; }
+
+  /* Magnetic buttons: spring + glow ring */
+  .btn-primary, .btn-secondary, .btn-submit {
+    transition: transform 0.2s cubic-bezier(.34,1.56,.64,1), background 0.3s, box-shadow 0.3s, color 0.3s;
+  }
+  .btn-primary:hover, .btn-secondary:hover, .btn-submit:hover { transform: translateY(-2px) scale(1.04); }
+  .btn-primary:active, .btn-secondary:active, .btn-submit:active { transform: scale(0.97); }
+
+  /* Nav links: animated underline already exists; add a tiny lift */
+  .nav-links a { transition: color 0.2s, transform 0.2s; display: inline-block; }
+  .nav-links a:hover { transform: translateY(-2px); }
+
+  /* Floating ambient dots in content sections (data stream feel) */
+  .float-dots { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
+  .float-dots span {
+    position: absolute;
+    width: 3px; height: 3px;
+    background: var(--cyan);
+    border-radius: 50%;
+    opacity: 0.25;
+    animation: floatUp linear infinite;
+  }
+  @keyframes floatUp {
+    from { transform: translateY(20px); opacity: 0; }
+    10% { opacity: 0.3; }
+    90% { opacity: 0.3; }
+    to { transform: translateY(-110px); opacity: 0; }
+  }
+  section.content { position: relative; }
+  section.content > .section-inner { position: relative; z-index: 1; }
+
+  /* Divider dot: spin + pulse */
+  @keyframes dotSpin { to { transform: rotate(405deg) scale(1.3); } }
+  .hud-divider-dot { animation: dotSpin 3s ease-in-out infinite alternate; }
+
+  /* Section titles get a subtle letter-spacing breathe */
+  @keyframes titleBreathe { 0%,100% { letter-spacing: 0.05em; } 50% { letter-spacing: 0.09em; } }
+
+  /* Tier price: count-up glow */
+  .tier-price { transition: color 0.3s; }
+  .tier-card:hover .tier-price { color: var(--cyan-bright); }
+
+  /* prev/our sponsor logos: float + glow cycle */
+  @keyframes logoFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+  .prev-logo { animation: logoFloat 4s ease-in-out infinite; }
+  .prev-logo:nth-child(2) { animation-delay: 0.6s; }
+
+  /* ════ COLOR-THEORY AMBIENCE ════
+     Instead of spinning hue randomly (which hits muddy/clashing colors),
+     we animate between curated harmonic palettes:
+       analogous → complementary → split-comp → triadic → back.
+     Each gradient blob has its own coordinated color track so the
+     overall combination is always a recognized harmony. */
+
+  .color-wash {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  /* three independent moving blobs, each animating color through harmonies */
+  .color-wash .blob {
+    position: absolute;
+    width: 60vw; height: 60vw;
+    border-radius: 50%;
+    filter: blur(90px);
+    opacity: 0.4;
+    mix-blend-mode: screen;
+    will-change: transform, background-color;
+  }
+  .color-wash .blob.b1 {
+    background: var(--cyan);
+    animation: moveB1 26s ease-in-out infinite, paletteA 40s ease-in-out infinite;
+  }
+  .color-wash .blob.b2 {
+    background: var(--gold);
+    animation: moveB2 32s ease-in-out infinite, paletteB 40s ease-in-out infinite;
+  }
+  .color-wash .blob.b3 {
+    background: var(--red);
+    animation: moveB3 38s ease-in-out infinite, paletteC 40s ease-in-out infinite;
+  }
+
+  /* ── motion tracks: blobs roam the whole viewport ── */
+  @keyframes moveB1 {
+    0%   { transform: translate(-20vw, -15vh); }
+    25%  { transform: translate(50vw, 10vh); }
+    50%  { transform: translate(60vw, 60vh); }
+    75%  { transform: translate(10vw, 40vh); }
+    100% { transform: translate(-20vw, -15vh); }
+  }
+  @keyframes moveB2 {
+    0%   { transform: translate(70vw, -10vh); }
+    25%  { transform: translate(20vw, 30vh); }
+    50%  { transform: translate(-15vw, 50vh); }
+    75%  { transform: translate(55vw, 70vh); }
+    100% { transform: translate(70vw, -10vh); }
+  }
+  @keyframes moveB3 {
+    0%   { transform: translate(30vw, 70vh); }
+    25%  { transform: translate(65vw, 40vh); }
+    50%  { transform: translate(20vw, -10vh); }
+    75%  { transform: translate(-10vw, 20vh); }
+    100% { transform: translate(30vw, 70vh); }
+  }
+
+  /* ── color tracks: each phase is a deliberate harmony ──
+     Phase 1 (0-25%):   ANALOGOUS  — cyan, teal, blue
+     Phase 2 (25-50%):  COMPLEMENTARY — cyan vs amber/gold
+     Phase 3 (50-75%):  SPLIT-COMP — teal, coral-red, gold
+     Phase 4 (75-100%): TRIADIC — cyan, magenta, gold */
+  @keyframes paletteA {  /* blob 1 */
+    0%   { background-color: hsl(190, 75%, 55%); } /* cyan */
+    25%  { background-color: hsl(190, 80%, 55%); } /* cyan (comp anchor) */
+    50%  { background-color: hsl(170, 70%, 50%); } /* teal */
+    75%  { background-color: hsl(190, 80%, 58%); } /* cyan (triad) */
+    100% { background-color: hsl(190, 75%, 55%); }
+  }
+  @keyframes paletteB {  /* blob 2 */
+    0%   { background-color: hsl(170, 65%, 50%); } /* teal (analogous) */
+    25%  { background-color: hsl(43,  90%, 55%); } /* gold (complement) */
+    50%  { background-color: hsl(43,  88%, 55%); } /* gold (split) */
+    75%  { background-color: hsl(48,  90%, 55%); } /* gold (triad) */
+    100% { background-color: hsl(170, 65%, 50%); }
+  }
+  @keyframes paletteC {  /* blob 3 */
+    0%   { background-color: hsl(210, 70%, 55%); } /* blue (analogous) */
+    25%  { background-color: hsl(205, 60%, 50%); } /* steel (comp neutral) */
+    50%  { background-color: hsl(8,   75%, 55%); } /* coral-red (split) */
+    75%  { background-color: hsl(310, 70%, 58%); } /* magenta (triad) */
+    100% { background-color: hsl(210, 70%, 55%); }
+  }
+
+  /* Auroras: move more + shift through the same harmony family */
+  .aurora {
+    animation: auroraDrift 14s ease-in-out infinite alternate,
+               auroraRoam 30s ease-in-out infinite,
+               auroraPalette 40s ease-in-out infinite;
+  }
+  @keyframes auroraRoam {
+    0%   { left: -80px; top: -100px; }
+    50%  { left: calc(100% - 200px); top: 30%; }
+    100% { left: -80px; top: -100px; }
+  }
+  @keyframes auroraPalette {
+    0%   { background-color: hsl(190, 75%, 55%); }
+    25%  { background-color: hsl(170, 70%, 50%); }
+    50%  { background-color: hsl(43, 88%, 55%); }
+    75%  { background-color: hsl(310, 65%, 55%); }
+    100% { background-color: hsl(190, 75%, 55%); }
+  }
+
+  /* Pulsing animated grid overlay */
+  @keyframes gridPulse {
+    0%,100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+  body::before { animation: gridPulse 8s ease-in-out infinite; }
+
+  .fog {
+    position: fixed;
+    inset: -20%;
+    z-index: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(circle at 30% 40%, rgba(79,195,232,0.05), transparent 25%),
+      radial-gradient(circle at 70% 60%, rgba(212,160,23,0.04), transparent 25%),
+      radial-gradient(circle at 50% 80%, rgba(192,57,43,0.04), transparent 20%);
+    animation: fogDrift 40s linear infinite;
+    opacity: 0.8;
+  }
+  @keyframes fogDrift {
+    0% { transform: translate(0,0) rotate(0deg); }
+    100% { transform: translate(-60px, -40px) rotate(8deg); }
+  }
+
+  .vignette {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    box-shadow: inset 0 0 200px 60px rgba(8,10,12,0.7);
+    animation: vignettePulse 10s ease-in-out infinite;
+  }
+  @keyframes vignettePulse {
+    0%,100% { box-shadow: inset 0 0 200px 60px rgba(8,10,12,0.7); }
+    50% { box-shadow: inset 0 0 240px 40px rgba(8,10,12,0.55); }
+  }
+
   @media (prefers-reduced-motion: reduce) {
-    .reveal { opacity: 1; transform: none; transition: none; }
-    .scroll-line { animation: none; }
-    .reactor-spin, .reactor-spin-rev, .reactor-spin-slow, .reactor-sweep, .core-pulse, .core-breathe { animation: none !important; }
-    .hero-particles, .cursor-glow { display: none; }
-    .section-title.wipe { clip-path: none !important; transition: none; }
-    .section-label.draw::before { width: 30px !important; transition: none; }
-    .section-inner.scanned .scan-bar { animation: none; }
-    .hero-stage { height: auto; }
-    .hero-sticky { position: relative; }
+    .color-wash .blob { animation: none; }
+    .aurora { animation: none; }
+    body::before { animation: none; }
+    .fog, .vignette { display: none; }
+    .avatar-ring { animation: none; }
+  }
+
+
+  /* Fixed constellation canvas behind everything */
+  .constellation {
+    position: fixed;
+    inset: 0;
+    width: 100vw; height: 100vh;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.55;
+  }
+
+  /* Custom cursor: a dot + a lagging ring */
+  .cursor-dot, .cursor-ring {
+    position: fixed;
+    top: 0; left: 0;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 10000;
+    transform: translate(-50%, -50%);
+    mix-blend-mode: screen;
+  }
+  .cursor-dot {
+    width: 7px; height: 7px;
+    background: var(--cyan-bright);
+    box-shadow: 0 0 10px var(--cyan-bright);
+    transition: width 0.2s, height 0.2s, background 0.2s;
+  }
+  .cursor-ring {
+    width: 34px; height: 34px;
+    border: 1.5px solid rgba(139,227,255,0.6);
+    transition: width 0.25s, height 0.25s, border-color 0.25s, background 0.25s;
+  }
+  .cursor-ring.hot {
+    width: 56px; height: 56px;
+    border-color: var(--gold-bright);
+    background: rgba(240,192,64,0.08);
+  }
+  .cursor-dot.hot { background: var(--gold-bright); box-shadow: 0 0 14px var(--gold-bright); }
+  /* hide custom cursor on touch / small screens */
+  @media (hover: none), (max-width: 768px) {
+    .cursor-dot, .cursor-ring { display: none; }
+    .constellation { opacity: 0.35; }
+  }
+
+  /* Aurora glow blobs drifting in section backgrounds */
+  .aurora {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(70px);
+    opacity: 0.18;
+    pointer-events: none;
+    z-index: 0;
+    animation: auroraDrift 18s ease-in-out infinite alternate;
+  }
+  .aurora.a1 { width: 380px; height: 380px; background: var(--cyan); top: -100px; left: -80px; }
+  .aurora.a2 { width: 320px; height: 320px; background: var(--red); bottom: -120px; right: -60px; animation-delay: -6s; }
+  .aurora.a3 { width: 280px; height: 280px; background: var(--gold); top: 40%; right: 20%; animation-delay: -11s; }
+  @keyframes auroraDrift {
+    0% { transform: translate(0,0) scale(1); }
+    50% { transform: translate(40px, -30px) scale(1.15); }
+    100% { transform: translate(-30px, 40px) scale(0.95); }
+  }
+
+  /* Scroll-velocity skew target */
+  .skewable { transition: transform 0.1s ease-out; will-change: transform; }
+
+  /* Hero title letters: glitch flicker occasionally */
+  @keyframes glitchFlick {
+    0%, 97%, 100% { transform: translate(0); opacity: 1; }
+    98% { transform: translate(-2px, 1px); opacity: 0.85; text-shadow: 2px 0 var(--red-bright), -2px 0 var(--cyan-bright); }
+    99% { transform: translate(2px, -1px); opacity: 1; text-shadow: -2px 0 var(--red-bright), 2px 0 var(--cyan-bright); }
+  }
+  .hero-title { animation: glitchFlick 7s steps(1) infinite; }
+
+  /* Nav logo reactor: rotate gently always */
+  @keyframes navSpin { to { transform: rotate(360deg); } }
+  .nav-reactor.visible circle:first-child { transform-origin: center; animation: navSpin 12s linear infinite; }
+
+  /* Section labels: blinking cursor block after text */
+  .section-label.draw.in::after {
+    content: '_';
+    color: var(--cyan-bright);
+    animation: blink 1.1s step-end infinite;
+    margin-left: 2px;
+  }
+
+  /* Reveal: add a slight scale + blur clearing for extra juice */
+  .reveal { filter: blur(4px); }
+  .reveal.in { filter: blur(0); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .constellation, .aurora { display: none; }
+    .cursor-dot, .cursor-ring { display: none; }
+    .hero-title { animation: none; }
+    .nav-reactor.visible circle:first-child { animation: none; }
+    .skewable { transform: none !important; }
+    .reveal { filter: none; }
   }
 </style>
 </head>
 <body>
 
+<div class="color-wash" id="colorWash" aria-hidden="true">
+  <div class="blob b1"></div>
+  <div class="blob b2"></div>
+  <div class="blob b3"></div>
+</div>
+<div class="fog" aria-hidden="true"></div>
+<div class="vignette" aria-hidden="true"></div>
+<canvas class="constellation" id="constellation" aria-hidden="true"></canvas>
+<div class="cursor-ring" id="cursorRing" aria-hidden="true"></div>
+<div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
 <div class="scanlines"></div>
 <div class="scroll-progress" id="progress"></div>
 
@@ -495,13 +1156,14 @@
       <circle cx="50" cy="50" r="20" fill="none" stroke="var(--cyan-bright)" stroke-width="3"/>
       <circle cx="50" cy="50" r="9" fill="var(--cyan-bright)"/>
     </svg>
-    J.A.R.V.I.S
+    J.A.R.V.I.S <span class="nav-team-num">#11799</span>
   </a>
   <ul class="nav-links">
     <li><a href="#about">About</a></li>
     <li><a href="#pillars">Mission</a></li>
-    <li><a href="#join">Join</a></li>
+    <li><a href="#mentors">Mentors</a></li>
     <li><a href="#sponsors">Sponsors</a></li>
+    <li><a href="#join">Join</a></li>
   </ul>
 </nav>
 
@@ -597,7 +1259,8 @@
     <div class="hero-text" id="heroText">
       <div class="hud-status" id="hudStatus">SYSTEM ONLINE</div>
       <h1 class="hero-title">J<span>.</span>A<span>.</span>R<span>.</span>V<span>.</span>I<span>.</span>S</h1>
-      <p class="hero-sub">FRC ROBOTICS &nbsp;|&nbsp; COPPELL, TX &nbsp;|&nbsp; WHEELHOUSE FOUNDATION</p>
+      <div class="hero-team-num">TEAM <span>#11799</span></div>
+      <p class="hero-sub">FRC &nbsp;|&nbsp; DALLAS–FORT WORTH, TX &nbsp;|&nbsp; WHEELHOUSE FOUNDATION DFW</p>
     </div>
 
     <!-- SCREEN 2: tagline + CTAs (fades in as reactor docks away) -->
@@ -623,16 +1286,16 @@
     <h2 class="section-title reveal d1">Who We <span>Are</span></h2>
     <div class="about-grid">
       <div class="about-text">
-        <p class="reveal">J.A.R.V.I.S is a first-year <strong>FIRST Robotics Competition</strong> team founded by the Wheelhouse Foundation in Coppell, Texas. We're building more than robots — we're building a program.</p>
-        <p class="reveal d1">FRC gives teams six weeks to design, build, and program a full-sized robot, then compete on a global stage. We're showing up to win.</p>
-        <p class="reveal d2">We're a <strong>community team</strong> — open to any student in the Coppell area, regardless of school or background. No experience required. Just drive.</p>
+        <p class="reveal">J.A.R.V.I.S is the <strong>FIRST Robotics Competition</strong> team of the Wheelhouse Foundation DFW — a student-led STEM organization based in the Dallas–Fort Worth metroplex, dedicated to hands-on robotics education through competition, mentorship, and community outreach.</p>
+        <p class="reveal d1">Across <strong>VEX IQ, VEX V5, VEX AI, FRC, RECF Achieve, and RECF Engage</strong>, our students develop skills in engineering, programming, CAD, and leadership while competing at the highest levels. <strong>Six Wheelhouse teams</strong> qualified for the 2026 VEX World Championship — a reflection of our commitment to excellence in STEM.</p>
+        <p class="reveal d2">Beyond competition, we work to expand access. Members mentor younger robotics teams and run camps and workshops serving <strong>75+ students a year</strong>, building technical skills and confidence in the next generation. Our FRC program is the next chapter — a <strong>community team</strong> open to any student, regardless of school or background.</p>
         <a href="#join" class="btn-secondary reveal d3" style="margin-top: 0.5rem;">Get Involved</a>
       </div>
       <div class="stat-grid reveal d1">
-        <div class="stat-cell"><span class="stat-num" data-count="1">0</span><span class="stat-label">Rookie Season</span></div>
-        <div class="stat-cell"><span class="stat-num" data-count="6">0</span><span class="stat-label">Week Build Season</span></div>
-        <div class="stat-cell"><span class="stat-num">TX</span><span class="stat-label">Coppell, Texas</span></div>
-        <div class="stat-cell"><span class="stat-num">∞</span><span class="stat-label">Potential</span></div>
+        <div class="stat-cell"><span class="stat-num" data-count="6">0</span><span class="stat-label">2026 Worlds Teams</span></div>
+        <div class="stat-cell"><span class="stat-num" data-count="75" data-suffix="+">0</span><span class="stat-label">Students Reached / Yr</span></div>
+        <div class="stat-cell"><span class="stat-num">DFW</span><span class="stat-label">Dallas–Fort Worth, TX</span></div>
+        <div class="stat-cell"><span class="stat-num" data-count="2027">0</span><span class="stat-label">Rookie FRC Season</span></div>
       </div>
     </div>
   </div>
@@ -648,19 +1311,171 @@
     <div class="pillars-grid">
       <div class="pillar-card reveal">
         <div class="pillar-icon">01 — Compete</div>
-        <h3 class="pillar-title">Elite Competition</h3>
-        <p class="pillar-body">We train and build to win. FRC demands engineering excellence, strategic thinking, and relentless iteration. We take the field seriously from day one.</p>
+        <h3 class="pillar-title">Engineering Excellence</h3>
+        <p class="pillar-body">Our students have earned Excellence Awards, Tournament Champion titles, Design Awards, and Robot Skills Championships across VEX and FRC. We design, build, and program to compete with the best — from local events to the World Championship stage.</p>
       </div>
       <div class="pillar-card reveal d1">
         <div class="pillar-icon">02 — Connect</div>
         <h3 class="pillar-title">Community Impact</h3>
-        <p class="pillar-body">Rooted in Coppell, backed by the Wheelhouse Foundation. We run outreach events, mentor younger students, and make sure robotics isn't just for the few.</p>
+        <p class="pillar-body">We run STEM camps and workshops for 75+ students a year and mentor 10+ VEX and FTC teams. Our members have presented to elected officials on Capitol Hill at the National Advocacy Conference and to students internationally — sharing STEM from the local to the global scale.</p>
       </div>
       <div class="pillar-card reveal d2">
         <div class="pillar-icon">03 — Create</div>
-        <h3 class="pillar-title">Real-World Skills</h3>
-        <p class="pillar-body">CAD, programming, fabrication, project management, media — every subteam teaches skills that matter beyond the competition field.</p>
+        <h3 class="pillar-title">Future-Ready Skills</h3>
+        <p class="pillar-body">Every member builds real expertise — CAD, programming, fabrication, AI, project management, and communication. As we grow our FRC program, we're pushing further into AI-driven robotics and the engineering challenges that come with it.</p>
       </div>
+    </div>
+
+    <div class="impact-band reveal d1">
+      <div class="impact-head">
+        <span class="impact-tag">// Our Impact</span>
+      </div>
+      <ul class="impact-list">
+        <li><strong>6 teams</strong> qualified for the 2026 VEX World Championship</li>
+        <li><strong>75+ students</strong> reached annually through camps &amp; workshops</li>
+        <li>Hands-on coding instruction via <strong>Scratch &amp; Python</strong> workshops</li>
+        <li>STEM advocacy presentations to elected officials on <strong>Capitol Hill</strong></li>
+        <li>International impact — STEM presentations to students <strong>abroad</strong></li>
+        <li>Mentoring <strong>10+ competitive VEX &amp; FTC teams</strong> and launching our FRC program</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<div class="hud-divider"><div class="hud-divider-dot"></div></div>
+
+<!-- MENTORS -->
+<section class="content" id="mentors">
+  <div class="section-inner">
+    <div class="section-label reveal">Guidance Network</div>
+    <h2 class="section-title reveal d1">Our <span>Mentors</span></h2>
+    <p class="mentors-intro reveal d1">Behind every great team is a network of mentors who give their time, expertise, and encouragement. Our mentors bring real-world engineering, programming, and industry experience to guide J.A.R.V.I.S students as they design, build, and compete.</p>
+
+    <div class="mentor-grid">
+      <div class="mentor-card reveal">
+        <div class="mentor-avatar"><span>?</span><div class="avatar-ring"></div></div>
+        <div class="mentor-name">Coming Soon</div>
+        <div class="mentor-role">Lead Mentor</div>
+        <div class="mentor-bio">Mentor profile to be announced.</div>
+      </div>
+      <div class="mentor-card reveal d1">
+        <div class="mentor-avatar"><span>?</span><div class="avatar-ring"></div></div>
+        <div class="mentor-name">Coming Soon</div>
+        <div class="mentor-role">Engineering Mentor</div>
+        <div class="mentor-bio">Mentor profile to be announced.</div>
+      </div>
+      <div class="mentor-card reveal d2">
+        <div class="mentor-avatar"><span>?</span><div class="avatar-ring"></div></div>
+        <div class="mentor-name">Coming Soon</div>
+        <div class="mentor-role">Software Mentor</div>
+        <div class="mentor-bio">Mentor profile to be announced.</div>
+      </div>
+      <div class="mentor-card reveal">
+        <div class="mentor-avatar"><span>?</span><div class="avatar-ring"></div></div>
+        <div class="mentor-name">Coming Soon</div>
+        <div class="mentor-role">Business Mentor</div>
+        <div class="mentor-bio">Mentor profile to be announced.</div>
+      </div>
+      <div class="mentor-card reveal d1">
+        <div class="mentor-avatar"><span>?</span><div class="avatar-ring"></div></div>
+        <div class="mentor-name">Coming Soon</div>
+        <div class="mentor-role">Outreach Mentor</div>
+        <div class="mentor-bio">Mentor profile to be announced.</div>
+      </div>
+      <div class="mentor-card mentor-join reveal d2">
+        <div class="mentor-join-icon">+</div>
+        <div class="mentor-name">Become a Mentor</div>
+        <div class="mentor-bio">Industry professional or experienced builder? We'd love your guidance.</div>
+        <a href="mailto:donations@wheelhousefoundationdfw.com?subject=Mentorship%20Interest" class="mentor-join-btn">Get in Touch</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="hud-divider"><div class="hud-divider-dot"></div></div>
+
+<!-- SPONSORS -->
+<section class="content" id="sponsors">
+  <div class="section-inner">
+    <div class="section-label reveal">Support Network</div>
+    <h2 class="section-title reveal d1">Sponsor <span>Us</span></h2>
+    <p class="sponsor-intro reveal d1">Sponsoring J.A.R.V.I.S puts your brand in front of students, families, and the broader STEM community — while directly funding the next generation of engineers. <strong>Individual and corporate sponsors are both welcome.</strong> All donations are <strong>tax-deductible</strong> through the Wheelhouse Foundation DFW's 501(c)(3) status.</p>
+
+    <div class="tier-grid">
+      <div class="tier-card platinum reveal">
+        <div class="tier-name">Platinum</div>
+        <div class="tier-price">$10,000+</div>
+        <ul class="tier-benefits">
+          <li>All Gold benefits, plus:</li>
+          <li><strong>Naming rights</strong> — "J.A.R.V.I.S presented by [your company]"</li>
+          <li>Logo on robot (largest placement)</li>
+          <li>Large logo on team shirts</li>
+          <li>Mention in all media &amp; events</li>
+          <li>VIP invite to competitions</li>
+          <li>2× monthly social media shout-outs</li>
+          <li>Sponsor plaque &amp; thank-you video</li>
+          <li>On-site demo for your company</li>
+        </ul>
+      </div>
+      <div class="tier-card gold reveal d1">
+        <div class="tier-name">Gold</div>
+        <div class="tier-price">$5,000 – $9,999</div>
+        <ul class="tier-benefits">
+          <li>All Silver benefits, plus:</li>
+          <li>Medium logo on robot</li>
+          <li>Medium logo on shirts</li>
+          <li>1× monthly social media shout-out</li>
+          <li>Recognition in newsletters</li>
+          <li>Certificate of appreciation</li>
+        </ul>
+      </div>
+      <div class="tier-card silver reveal d2">
+        <div class="tier-name">Silver</div>
+        <div class="tier-price">$2,500 – $4,999</div>
+        <ul class="tier-benefits">
+          <li>All Bronze benefits, plus:</li>
+          <li>Small logo on robot</li>
+          <li>1 social media post every 3 months</li>
+          <li>Team photo with signed thank-you card</li>
+        </ul>
+      </div>
+      <div class="tier-card bronze reveal">
+        <div class="tier-name">Bronze</div>
+        <div class="tier-price">$1,000 – $2,499</div>
+        <ul class="tier-benefits">
+          <li>All Supporter benefits, plus:</li>
+          <li>Company logo displayed on this website</li>
+          <li>1× social media post</li>
+        </ul>
+      </div>
+      <div class="tier-card supporter reveal d1">
+        <div class="tier-name">Supporter</div>
+        <div class="tier-price">$500 – $999</div>
+        <ul class="tier-benefits">
+          <li>Company logo on team shirt &amp; banner</li>
+          <li>Personalized thank-you letter</li>
+        </ul>
+      </div>
+      <div class="tier-card note-card reveal d2">
+        <div class="tier-note-label">// Note</div>
+        <p class="tier-note">Benefits are per season. We also accept in-kind donations of FRC-useful parts (e.g. brushless motors, gearboxes) — tier placement is based on the market value of donated items.</p>
+      </div>
+    </div>
+
+    <div class="prev-sponsors reveal">
+      <div class="section-label" style="justify-content:center; margin-bottom:1.25rem;">Our Sponsors</div>
+      <div class="prev-sponsor-logos">
+        <span class="prev-logo">BOEING</span>
+        <span class="prev-logo">HAAS</span>
+      </div>
+    </div>
+
+    <div class="partner-cta reveal">
+      <div class="partner-cta-text">
+        <h3>Partner with J.A.R.V.I.S</h3>
+        <p>Ready to support the next generation of engineers? Donations are made to the <strong>Wheelhouse Foundation DFW</strong> — a registered 501(c)(3), EIN <strong>85-3925098</strong> — and are fully tax-deductible. Individual and corporate sponsors welcome.</p>
+      </div>
+      <a href="mailto:donations@wheelhousefoundationdfw.com" class="btn-primary">Become a Sponsor</a>
     </div>
   </div>
 </section>
@@ -674,15 +1489,14 @@
     <h2 class="section-title reveal d1">Join <span>J.A.R.V.I.S</span></h2>
     <div class="join-grid">
       <div>
-        <p class="reveal" style="color: var(--silver); font-size: 1.05rem; line-height: 1.8; margin-bottom: 1.5rem;">Open to any high school student in the Coppell area. No robotics experience needed — just curiosity and commitment. There's a place for every skill set.</p>
+        <p class="reveal" style="color: var(--silver); font-size: 1.05rem; line-height: 1.8; margin-bottom: 1.5rem;">Open to any high school student in the DFW area. No robotics experience needed — just curiosity and commitment. There's a place for every skill set.</p>
         <div class="section-label reveal d1" style="margin-bottom: 0.75rem;">Available Subteams</div>
         <div class="subteams">
           <div class="subteam-row reveal">Mechanical & Fabrication <span class="subteam-tag">Open</span></div>
           <div class="subteam-row reveal">Software & Programming <span class="subteam-tag">Open</span></div>
           <div class="subteam-row reveal d1">CAD & Design <span class="subteam-tag">Open</span></div>
           <div class="subteam-row reveal d1">Electrical & Controls <span class="subteam-tag">Open</span></div>
-          <div class="subteam-row reveal d2">Media & Outreach <span class="subteam-tag">Open</span></div>
-          <div class="subteam-row reveal d2">Strategy & Scouting <span class="subteam-tag">Open</span></div>
+          <div class="subteam-row reveal d2">Business <span class="subteam-tag">Open</span></div>
         </div>
       </div>
       <div class="reveal d1">
@@ -700,7 +1514,7 @@
             </div>
           </div>
           <div class="form-group"><label class="form-label">Area of Interest</label>
-            <select class="form-select"><option value="">Select a subteam</option><option>Mechanical & Fabrication</option><option>Software & Programming</option><option>CAD & Design</option><option>Electrical & Controls</option><option>Media & Outreach</option><option>Strategy & Scouting</option><option>Not sure yet</option></select>
+            <select class="form-select"><option value="">Select a subteam</option><option>Mechanical & Fabrication</option><option>Software & Programming</option><option>CAD & Design</option><option>Electrical & Controls</option><option>Business</option><option>Not sure yet</option></select>
           </div>
           <div class="form-group"><label class="form-label">Anything else?</label><textarea class="form-textarea" placeholder="Tell us about yourself..."></textarea></div>
           <button type="submit" class="btn-submit">Submit Application</button>
@@ -711,53 +1525,219 @@
   </div>
 </section>
 
-<div class="hud-divider"><div class="hud-divider-dot"></div></div>
-
-<!-- SPONSORS -->
-<section class="content" id="sponsors">
-  <div class="section-inner">
-    <div class="section-label reveal">Support Network</div>
-    <h2 class="section-title reveal d1">Our <span>Sponsors</span></h2>
-    <p class="sponsor-intro reveal d1">J.A.R.V.I.S is proudly supported by the Wheelhouse Foundation and the community of Coppell, Texas. Interested in joining our mission?</p>
-    <div class="sponsor-tiers">
-      <div class="reveal">
-        <div class="tier-label tier-gold">Titanium Partners</div>
-        <div class="sponsor-slots large">
-          <div class="sponsor-slot filled"><div class="sponsor-name">Wheelhouse Foundation</div></div>
-          <div class="sponsor-slot"><div class="slot-text">YOUR COMPANY<br>HERE</div></div>
-        </div>
-      </div>
-      <div class="reveal d1">
-        <div class="tier-label tier-silver">Community Supporters</div>
-        <div class="sponsor-slots small">
-          <div class="sponsor-slot"><div class="slot-text">OPEN</div></div>
-          <div class="sponsor-slot"><div class="slot-text">OPEN</div></div>
-          <div class="sponsor-slot"><div class="slot-text">OPEN</div></div>
-          <div class="sponsor-slot"><div class="slot-text">OPEN</div></div>
-        </div>
-      </div>
-    </div>
-    <div class="partner-cta reveal">
-      <div class="partner-cta-text">
-        <h3>Partner with J.A.R.V.I.S</h3>
-        <p>Sponsoring a rookie FRC team puts your brand in front of students, families, and the broader STEM community — while directly funding the next generation of engineers.</p>
-      </div>
-      <a href="mailto:contact@jarvisrobotics.org" class="btn-primary">Get in Touch</a>
-    </div>
-  </div>
-</section>
-
 <!-- FOOTER -->
 <footer>
   <div class="footer-logo">J.A.R.V.I.S</div>
-  <div class="footer-sub">FRC Robotics &nbsp;·&nbsp; Coppell, TX &nbsp;·&nbsp; Wheelhouse Foundation &nbsp;·&nbsp; est. 2025</div>
+  <div class="footer-sub">FRC Team #11799 &nbsp;·&nbsp; Dallas–Fort Worth, TX &nbsp;·&nbsp; Wheelhouse Foundation DFW 501(c)(3) &nbsp;·&nbsp; EIN 85-3925098</div>
+  <div class="footer-contact">
+    <a href="mailto:donations@wheelhousefoundationdfw.com">donations@wheelhousefoundationdfw.com</a>
+    <span>·</span>
+    <a href="tel:+19729719343">+1 (972) 971-9343</a>
+    <span>·</span>
+    <a href="https://instagram.com/wheelhouse_foundation" target="_blank" rel="noopener">@wheelhouse_foundation</a>
+  </div>
   <ul class="footer-links">
-    <li><a href="#home">Home</a></li><li><a href="#about">About</a></li><li><a href="#join">Join</a></li><li><a href="#sponsors">Sponsors</a></li>
+    <li><a href="#home">Home</a></li><li><a href="#about">About</a></li><li><a href="#sponsors">Sponsors</a></li><li><a href="#join">Join</a></li>
   </ul>
 </footer>
 
 <script>
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ════ Interactive constellation network ════ */
+  (function constellation(){
+    if (reduceMotion) return;
+    const canvas = document.getElementById('constellation');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let w, h, pts = [];
+    const mouse = { x: -9999, y: -9999 };
+    function resize(){
+      w = canvas.width = window.innerWidth * devicePixelRatio;
+      h = canvas.height = window.innerHeight * devicePixelRatio;
+      const count = Math.min(90, Math.floor(window.innerWidth * window.innerHeight / 18000));
+      pts = [];
+      for (let i = 0; i < count; i++){
+        pts.push({
+          x: Math.random() * w, y: Math.random() * h,
+          vx: (Math.random() - 0.5) * 0.25 * devicePixelRatio,
+          vy: (Math.random() - 0.5) * 0.25 * devicePixelRatio
+        });
+      }
+    }
+    resize();
+    window.addEventListener('resize', resize);
+    window.addEventListener('mousemove', e => { mouse.x = e.clientX * devicePixelRatio; mouse.y = e.clientY * devicePixelRatio; });
+    window.addEventListener('mouseout', () => { mouse.x = -9999; mouse.y = -9999; });
+    const linkDist = 130 * devicePixelRatio;
+    const mouseDist = 200 * devicePixelRatio;
+    let lastFrame = 0;
+    let heroVisible = true;
+    let tabVisible = true;
+    // only run the network while the hero (where it's visible) is on screen
+    const heroEl = document.querySelector('.hero-stage');
+    if (heroEl && 'IntersectionObserver' in window){
+      new IntersectionObserver((ents) => {
+        heroVisible = ents[0].isIntersecting;
+      }, { threshold: 0 }).observe(heroEl);
+    }
+    document.addEventListener('visibilitychange', () => { tabVisible = !document.hidden; });
+
+    function frame(ts){
+      requestAnimationFrame(frame);
+      // skip work when not needed: tab hidden, or scrolled past hero
+      if (!tabVisible || !heroVisible) return;
+      // throttle to ~40fps — plenty smooth, lighter on high-refresh screens
+      if (ts - lastFrame < 25) return;
+      lastFrame = ts;
+      ctx.clearRect(0,0,w,h);
+      for (let i = 0; i < pts.length; i++){
+        const p = pts[i];
+        p.x += p.vx; p.y += p.vy;
+        if (p.x < 0 || p.x > w) p.vx *= -1;
+        if (p.y < 0 || p.y > h) p.vy *= -1;
+        // pull gently toward mouse
+        const mdx = mouse.x - p.x, mdy = mouse.y - p.y;
+        const md = Math.hypot(mdx, mdy);
+        if (md < mouseDist){
+          p.x += (mdx / md) * 0.4;
+          p.y += (mdy / md) * 0.4;
+        }
+        // node
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 1.4 * devicePixelRatio, 0, Math.PI*2);
+        ctx.fillStyle = 'rgba(139,227,255,0.7)';
+        ctx.fill();
+        // links
+        for (let j = i+1; j < pts.length; j++){
+          const q = pts[j];
+          const d = Math.hypot(p.x - q.x, p.y - q.y);
+          if (d < linkDist){
+            const a = (1 - d/linkDist) * 0.4;
+            ctx.beginPath();
+            ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y);
+            ctx.strokeStyle = `rgba(79,195,232,${a})`;
+            ctx.lineWidth = 0.6 * devicePixelRatio;
+            ctx.stroke();
+          }
+        }
+        // link to mouse
+        if (md < mouseDist){
+          const a = (1 - md/mouseDist) * 0.5;
+          ctx.beginPath();
+          ctx.moveTo(p.x, p.y); ctx.lineTo(mouse.x, mouse.y);
+          ctx.strokeStyle = `rgba(240,192,64,${a})`;
+          ctx.lineWidth = 0.7 * devicePixelRatio;
+          ctx.stroke();
+        }
+      }
+    }
+    requestAnimationFrame(frame);
+  })();
+
+  /* ════ Custom cursor with lagging ring ════ */
+  (function customCursor(){
+    if (reduceMotion || window.matchMedia('(hover: none)').matches) return;
+    const dot = document.getElementById('cursorDot');
+    const ring = document.getElementById('cursorRing');
+    if (!dot || !ring) return;
+    let mx = window.innerWidth/2, my = window.innerHeight/2;
+    let rx = mx, ry = my;
+    window.addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+      dot.style.left = mx + 'px'; dot.style.top = my + 'px';
+    });
+    function loop(){
+      rx += (mx - rx) * 0.18; ry += (my - ry) * 0.18;
+      ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+      requestAnimationFrame(loop);
+    }
+    loop();
+    // grow on interactive elements
+    document.querySelectorAll('a, button, .pillar-card, .tier-card, .subteam-row, input, select, textarea').forEach(el => {
+      el.addEventListener('mouseenter', () => { ring.classList.add('hot'); dot.classList.add('hot'); });
+      el.addEventListener('mouseleave', () => { ring.classList.remove('hot'); dot.classList.remove('hot'); });
+    });
+  })();
+
+  /* ════ Aurora blobs in each content section ════ */
+  if (!reduceMotion) {
+    document.querySelectorAll('section.content').forEach((sec, i) => {
+      ['a1','a2','a3'].forEach(cls => {
+        const b = document.createElement('div');
+        b.className = 'aurora ' + cls;
+        sec.insertBefore(b, sec.firstChild);
+      });
+    });
+  }
+
+  /* ════ Scroll-velocity skew on section inners ════ */
+  if (!reduceMotion) {
+    let lastY = window.scrollY, vel = 0, ticking = false;
+    document.querySelectorAll('.section-inner').forEach(el => el.classList.add('skewable'));
+    function applySkew(){
+      vel = window.scrollY - lastY;
+      lastY = window.scrollY;
+      const skew = Math.max(-2, Math.min(2, vel * 0.04));
+      document.querySelectorAll('.skewable').forEach(el => {
+        el.style.transform = `skewY(${skew}deg)`;
+      });
+      ticking = false;
+    }
+    window.addEventListener('scroll', () => {
+      if (!ticking){ requestAnimationFrame(applySkew); ticking = true; }
+    }, { passive: true });
+    // settle back to 0 when scrolling stops
+    setInterval(() => {
+      if (Math.abs(vel) < 0.5) {
+        document.querySelectorAll('.skewable').forEach(el => { el.style.transform = 'skewY(0deg)'; });
+      }
+      vel *= 0.8;
+    }, 120);
+  }
+
+  /* ════ Hero tagline text-scramble on reveal ════ */
+  (function scramble(){
+    if (reduceMotion) return;
+    const el = document.querySelector('.hero-tagline');
+    if (!el) return;
+    const chars = '!<>-_\\/[]{}—=+*^?#01';
+    const original = el.textContent;
+    let done = false;
+    function run(){
+      if (done) return; done = true;
+      const final = original;
+      let frame = 0;
+      const queue = [];
+      for (let i = 0; i < final.length; i++){
+        const start = Math.floor(Math.random() * 20);
+        const end = start + Math.floor(Math.random() * 20);
+        queue.push({ to: final[i], start, end, char: '' });
+      }
+      function update(){
+        let out = '', complete = 0;
+        for (let i = 0; i < queue.length; i++){
+          let q = queue[i];
+          if (frame >= q.end){ complete++; out += q.to; }
+          else if (frame >= q.start){
+            if (!q.char || Math.random() < 0.28) q.char = chars[Math.floor(Math.random()*chars.length)];
+            out += `<span style="color:var(--cyan)">${q.char}</span>`;
+          } else { out += ''; }
+        }
+        el.innerHTML = out;
+        if (complete < queue.length){ frame++; requestAnimationFrame(update); }
+        else { el.textContent = final; }
+      }
+      update();
+    }
+    // run when hero CTA becomes visible (mid-scroll)
+    const io = new IntersectionObserver((ents) => {
+      ents.forEach(e => { if (e.isIntersecting) run(); });
+    }, { threshold: 0.5 });
+    io.observe(el);
+    setTimeout(run, 4000); // fallback
+  })();
+
 
   /* ── Build the coil segments procedurally ── */
   (function buildCoils(){
@@ -1050,24 +2030,83 @@
   }, { threshold: 0.25 });
   document.querySelectorAll('section.content').forEach(sec => sectionIO.observe(sec));
 
-  /* ── Count-up stats ── */
+  /* ── Count-up stats: quick eased ramp, suffix-aware ── */
   const statIO = new IntersectionObserver((entries) => {
     entries.forEach(e => {
-      if (e.isIntersecting){
-        const el = e.target;
-        const target = parseInt(el.dataset.count, 10);
-        let cur = 0;
-        const step = Math.max(1, Math.round(target / 20));
-        const t = setInterval(() => {
-          cur += step;
-          if (cur >= target){ cur = target; clearInterval(t); }
-          el.textContent = cur;
-        }, 40);
-        statIO.unobserve(el);
+      if (!e.isIntersecting) return;
+      const el = e.target;
+      statIO.unobserve(el);
+      const target = parseInt(el.dataset.count, 10);
+      const suffix = el.dataset.suffix || '';
+      if (reduceMotion) { el.textContent = target + suffix; return; }
+      const dur = 900; // quick
+      const start = performance.now();
+      function tick(now){
+        const p = Math.min(1, (now - start) / dur);
+        // easeOutExpo — fast then settles
+        const eased = p === 1 ? 1 : 1 - Math.pow(2, -10 * p);
+        el.textContent = Math.round(target * eased) + suffix;
+        if (p < 1) requestAnimationFrame(tick);
+        else el.textContent = target + suffix;
       }
+      requestAnimationFrame(tick);
     });
   }, { threshold: 0.6 });
   document.querySelectorAll('.stat-num[data-count]').forEach(el => statIO.observe(el));
+
+  /* ── 3D tilt on pillar cards (cursor-reactive) ── */
+  if (!reduceMotion) {
+    document.querySelectorAll('.pillar-card').forEach(card => {
+      card.addEventListener('mousemove', (e) => {
+        const r = card.getBoundingClientRect();
+        const px = (e.clientX - r.left) / r.width;   // 0..1
+        const py = (e.clientY - r.top) / r.height;
+        const rx = (py - 0.5) * -10;  // tilt up/down
+        const ry = (px - 0.5) * 14;   // tilt left/right
+        card.style.setProperty('--rx', rx.toFixed(2) + 'deg');
+        card.style.setProperty('--ry', ry.toFixed(2) + 'deg');
+        card.style.setProperty('--gx', (px * 100).toFixed(1) + '%');
+        card.style.setProperty('--gy', (py * 100).toFixed(1) + '%');
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.setProperty('--rx', '0deg');
+        card.style.setProperty('--ry', '0deg');
+      });
+    });
+  }
+
+  /* ── Magnetic buttons: nudge toward cursor ── */
+  if (!reduceMotion) {
+    document.querySelectorAll('.btn-primary, .btn-secondary').forEach(btn => {
+      btn.addEventListener('mousemove', (e) => {
+        const r = btn.getBoundingClientRect();
+        const mx = (e.clientX - r.left - r.width/2) / r.width;
+        const my = (e.clientY - r.top - r.height/2) / r.height;
+        btn.style.transform = `translate(${mx*8}px, ${my*8 - 2}px) scale(1.04)`;
+      });
+      btn.addEventListener('mouseleave', () => { btn.style.transform = ''; });
+    });
+  }
+
+  /* ── Floating ambient dots in each content section ── */
+  if (!reduceMotion) {
+    document.querySelectorAll('section.content').forEach(sec => {
+      const wrap = document.createElement('div');
+      wrap.className = 'float-dots';
+      const n = 14;
+      for (let i = 0; i < n; i++) {
+        const d = document.createElement('span');
+        d.style.left = Math.random() * 100 + '%';
+        d.style.bottom = '-10px';
+        const dur = 6 + Math.random() * 8;
+        d.style.animationDuration = dur + 's';
+        d.style.animationDelay = (-Math.random() * dur) + 's';
+        d.style.width = d.style.height = (2 + Math.random() * 2.5).toFixed(1) + 'px';
+        wrap.appendChild(d);
+      }
+      sec.insertBefore(wrap, sec.firstChild);
+    });
+  }
 
   /* ── Form ── */
   function handleSubmit(e){

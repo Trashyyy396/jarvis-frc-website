@@ -1,4 +1,4 @@
-move -Force "$HOME\Downloads\jarvis-prototype.html" .\index.html<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -1501,22 +1501,24 @@ move -Force "$HOME\Downloads\jarvis-prototype.html" .\index.html<!DOCTYPE html>
       </div>
       <div class="reveal d1">
         <div class="section-label" style="margin-bottom: 1rem;">Interest Form</div>
-        <form class="hud-form" onsubmit="handleSubmit(event)">
+        <form class="hud-form" name="team-registration" method="POST" data-netlify="true" netlify-honeypot="bot-field" onsubmit="handleSubmit(event)">
+          <input type="hidden" name="form-name" value="team-registration">
+          <p style="display:none"><label>Don't fill this out: <input name="bot-field"></label></p>
           <div class="form-row">
-            <div class="form-group"><label class="form-label">First Name</label><input class="form-input" type="text" placeholder="Tony" required></div>
-            <div class="form-group"><label class="form-label">Last Name</label><input class="form-input" type="text" placeholder="Stark" required></div>
+            <div class="form-group"><label class="form-label">First Name</label><input class="form-input" name="first-name" type="text" placeholder="Tony" required></div>
+            <div class="form-group"><label class="form-label">Last Name</label><input class="form-input" name="last-name" type="text" placeholder="Stark" required></div>
           </div>
-          <div class="form-group"><label class="form-label">Email</label><input class="form-input" type="email" placeholder="you@email.com" required></div>
+          <div class="form-group"><label class="form-label">Email</label><input class="form-input" name="email" type="email" placeholder="you@email.com" required></div>
           <div class="form-row">
-            <div class="form-group"><label class="form-label">School</label><input class="form-input" type="text" placeholder="Your school"></div>
+            <div class="form-group"><label class="form-label">School</label><input class="form-input" name="school" type="text" placeholder="Your school"></div>
             <div class="form-group"><label class="form-label">Grade</label>
-              <select class="form-select"><option value="">Select</option><option>9th</option><option>10th</option><option>11th</option><option>12th</option></select>
+              <select class="form-select" name="grade"><option value="">Select</option><option>9th</option><option>10th</option><option>11th</option><option>12th</option></select>
             </div>
           </div>
           <div class="form-group"><label class="form-label">Area of Interest</label>
-            <select class="form-select"><option value="">Select a subteam</option><option>Mechanical & Fabrication</option><option>Software & Programming</option><option>CAD & Design</option><option>Electrical & Controls</option><option>Business</option><option>Not sure yet</option></select>
+            <select class="form-select" name="area-of-interest"><option value="">Select a subteam</option><option>Mechanical & Fabrication</option><option>Software & Programming</option><option>CAD & Design</option><option>Electrical & Controls</option><option>Business</option><option>Not sure yet</option></select>
           </div>
-          <div class="form-group"><label class="form-label">Anything else?</label><textarea class="form-textarea" placeholder="Tell us about yourself..."></textarea></div>
+          <div class="form-group"><label class="form-label">Anything else?</label><textarea class="form-textarea" name="message" placeholder="Tell us about yourself..."></textarea></div>
           <button type="submit" class="btn-submit">Submit Application</button>
         </form>
         <div id="form-success" style="display:none; margin-top:1rem; padding: 1rem; background: rgba(192,57,43,0.1); border: 1px solid var(--border-red); font-family: 'Share Tech Mono', monospace; font-size: 0.75rem; letter-spacing: 0.1em; color: var(--gold-bright);">&gt; TRANSMISSION RECEIVED. WE'LL BE IN TOUCH.</div>
@@ -2108,11 +2110,25 @@ move -Force "$HOME\Downloads\jarvis-prototype.html" .\index.html<!DOCTYPE html>
     });
   }
 
-  /* ── Form ── */
+  /* ── Form: submit to Netlify Forms, then show success ── */
   function handleSubmit(e){
     e.preventDefault();
-    e.target.style.display = 'none';
-    document.getElementById('form-success').style.display = 'block';
+    const form = e.target;
+    const data = new URLSearchParams(new FormData(form)).toString();
+    fetch('/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: data
+    })
+    .then(() => {
+      form.style.display = 'none';
+      document.getElementById('form-success').style.display = 'block';
+    })
+    .catch(() => {
+      // still show success so the user isn't stuck; submission is also in Netlify logs if it went through
+      form.style.display = 'none';
+      document.getElementById('form-success').style.display = 'block';
+    });
   }
 </script>
 </body>

@@ -12,46 +12,115 @@ FACTS:
 - Sponsorship (benefits per season, individual and corporate sponsors welcome, tax-deductible): Platinum $10,000+ (naming rights, largest robot logo, VIP invites), Gold $5,000-$9,999, Silver $2,500-$4,999, Bronze $1,000-$2,499, Supporter $500-$999. In-kind FRC parts donations count toward a tier by market value.
 - Contact: donations@wheelhousefoundationdfw.com, +1 (972) 971-9343, Instagram @wheelhouse_foundation.`;
 
+const NVIDIA_URL = "https://integrate.api.nvidia.com/v1/chat/completions";
 
+// Models are tried in order. NVIDIA retires models from its free catalog over time
+// (meta/llama-3.1-8b-instruct is gone, which is why every request was failing),
+// so if one model is missing we move on to the next one.
+// Set NVIDIA_MODEL in Netlify to put a different model first.
+const MODELS = [
+  process.env.NVIDIA_MODEL,
+  "nvidia/llama-3.1-nemotron-70b-instruct",
+  "nv-mistralai/mistral-nemo-12b-instruct",
+  "mistralai/mistral-7b-instruct-v0.3",
+].filter(Boolean);
 
+// Netlify stops a function after about 10 seconds, so all attempts share a 9 second budget.
+const TIME_BUDGET_MS = 9000;
 
-const json = (body, status = 200) =>
-  new Response(JSON.stringify(body), { status, headers: { "Content-Type": "application/json" } });
+// The Firebase copy of the site (/jarvis) is a different website, so the browser
+// needs permission (CORS) before it can call this function.
+const ALLOWED_ORIGINS = [
+  "https://jarvisfrcv.netlify.app",
+  "https://wheelhouse-foundation-website.web.app",
+  "https://wheelhouse-foundation-website.firebaseapp.com",
+];
+
+const corsHeaders = (req) => {
+  const origin = req.headers.get("origin");
+  if (!ALLOWED_ORIGINS.includes(origin)) return {};
+  return {
+    "Access-Control-Allow-Origin": origin,
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type",
+    Vary: "Origin",
+  };
+};
+
+// Removes markdown and "thinking" text some models add, so the chat bubble stays plain.
+const cleanReply = (text) =>
+  String(text || "")
+    .replace(/<think>[\s\S]*?<\/think>/gi, "")
+    .replace(/\*\*(.+?)\*\*/g, "$1")
+    .replace(/^\s*[*-]\s+/gm, "")
+    .trim();
 
 export default async (req) => {
-  
+  const cors = corsHeaders(req);
+  const json = (body, status = 200) =>
+    new Response(JSON.stringify(body), {
+      status,
+      headers: { "Content-Type": "application/json", ...cors },
+    });
+
+  if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: cors });
   if (req.method !== "POST") return json({ error: "POST only" }, 405);
 
-  
-  
-  
-  
+  const apiKey = process.env.NVIDIA_API_KEY;
+  if (!apiKey) {
+    console.error("NVIDIA_API_KEY is missing. Add it in Netlify > Site configuration > Environment variables, then redeploy.");
+    return json({ error: "AI not configured" }, 500);
+  }
+
   const { message } = await req.json().catch(() => ({}));
   if (typeof message !== "string" || !message.trim() || message.length > 500) {
     return json({ error: "Invalid message" }, 400);
   }
 
-  
-  
-  
-  const res = await fetch("https://integrate.api.nvidia.com/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${process.env.NVIDIA_API_KEY}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      model: process.env.NVIDIA_MODEL || "meta/llama-3.1-8b-instruct",
-      messages: [
-        { role: "system", content: SYSTEM_PROMPT },
-        { role: "user", content: message },
-      ],
-      max_tokens: 300,   
-      temperature: 0.3,  
-    }),
-  });
+  const deadline = Date.now() + TIME_BUDGET_MS;
+  let lastStatus = 0;
 
-  if (!res.ok) return json({ error: "AI unavailable" }, 502);
-  const data = await res.json();
-  return json({ reply: data.choices[0].message.content });
+  for (const model of MODELS) {
+    const timeLeft = deadline - Date.now();
+    if (timeLeft < 1000) break;
+
+    try {
+      const res = await fetch(NVIDIA_URL, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model,
+          messages: [
+            { role: "system", content: SYSTEM_PROMPT },
+            { role: "user", content: message.trim() },
+          ],
+          max_tokens: 300,
+          temperature: 0.3,
+        }),
+        signal: AbortSignal.timeout(timeLeft),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        const reply = cleanReply(data?.choices?.[0]?.message?.content);
+        if (reply) return json({ reply, model });
+        console.error(`NVIDIA ${model}: empty reply`);
+        lastStatus = 502;
+        continue;
+      }
+
+      lastStatus = res.status;
+      console.error(`NVIDIA ${model} error ${res.status}:`, (await res.text()).slice(0, 300));
+      // 401 = bad key, 429 = rate limited. Trying another model won't help.
+      if (res.status === 401 || res.status === 429) break;
+    } catch (err) {
+      lastStatus = 504;
+      console.error(`NVIDIA ${model} request failed:`, err.name, err.message);
+    }
+  }
+
+  return json({ error: "AI unavailable", status: lastStatus }, 502);
 };

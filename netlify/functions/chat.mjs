@@ -14,15 +14,18 @@ FACTS:
 
 const NVIDIA_URL = "https://integrate.api.nvidia.com/v1/chat/completions";
 
-// Models are tried in order. NVIDIA retires models from its free catalog over time
-// (meta/llama-3.1-8b-instruct is gone, which is why every request was failing),
-// so if one model is missing we move on to the next one.
+// Models are tried in order. NVIDIA retires older models from its free endpoints
+// ("Function ... Not found for account" = 404), so if one is gone we move on to the next.
 // Set NVIDIA_MODEL in Netlify to put a different model first.
 const MODELS = [
   process.env.NVIDIA_MODEL,
-  "nvidia/llama-3.1-nemotron-70b-instruct",
-  "nv-mistralai/mistral-nemo-12b-instruct",
-  "mistralai/mistral-7b-instruct-v0.3",
+  "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "nvidia/nemotron-3-super-120b-a12b",
+  "nvidia/nemotron-nano-3-30b-a3b",
+  "z-ai/glm-5.3-flash",
+  "deepseek-ai/deepseek-v4.1-flash",
+  "openai/gpt-oss-20b",
+  "google/gemma-3-12b-it",
 ].filter(Boolean);
 
 // Netlify stops a function after about 10 seconds, so all attempts share a 9 second budget.
@@ -80,45 +83,58 @@ export default async (req) => {
   const deadline = Date.now() + TIME_BUDGET_MS;
   let lastStatus = 0;
 
-  for (const model of MODELS) {
-    const timeLeft = deadline - Date.now();
-    if (timeLeft < 1000) break;
+  // Newer models "think" before answering by default, which is slow. These settings turn
+  // that off. If a model rejects them (400/422), we retry that model once without them.
+  const NO_THINKING = {
+    chat_template_kwargs: { enable_thinking: false, thinking: false },
+    reasoning_effort: "low",
+  };
 
-    try {
-      const res = await fetch(NVIDIA_URL, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${apiKey}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          model,
-          messages: [
-            { role: "system", content: SYSTEM_PROMPT },
-            { role: "user", content: message.trim() },
-          ],
-          max_tokens: 300,
-          temperature: 0.3,
-        }),
-        signal: AbortSignal.timeout(timeLeft),
-      });
+  tryModels: for (const model of MODELS) {
+    for (const extra of [NO_THINKING, {}]) {
+      const timeLeft = deadline - Date.now();
+      if (timeLeft < 1000) break tryModels;
 
-      if (res.ok) {
-        const data = await res.json();
-        const reply = cleanReply(data?.choices?.[0]?.message?.content);
-        if (reply) return json({ reply, model });
-        console.error(`NVIDIA ${model}: empty reply`);
-        lastStatus = 502;
-        continue;
+      try {
+        const res = await fetch(NVIDIA_URL, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${apiKey}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            model,
+            messages: [
+              { role: "system", content: SYSTEM_PROMPT },
+              { role: "user", content: message.trim() },
+            ],
+            max_tokens: 600,
+            temperature: 0.3,
+            ...extra,
+          }),
+          signal: AbortSignal.timeout(timeLeft),
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          const reply = cleanReply(data?.choices?.[0]?.message?.content);
+          if (reply) return json({ reply, model });
+          console.error(`NVIDIA ${model}: empty reply`);
+          lastStatus = 502;
+          continue tryModels;
+        }
+
+        lastStatus = res.status;
+        console.error(`NVIDIA ${model} error ${res.status}:`, (await res.text()).slice(0, 300));
+        // 401 = bad key, 429 = rate limited. Trying another model won't help.
+        if (res.status === 401 || res.status === 429) break tryModels;
+        // Only a rejected request body is worth retrying on the same model.
+        if (res.status !== 400 && res.status !== 422) continue tryModels;
+      } catch (err) {
+        lastStatus = 504;
+        console.error(`NVIDIA ${model} request failed:`, err.name, err.message);
+        continue tryModels;
       }
-
-      lastStatus = res.status;
-      console.error(`NVIDIA ${model} error ${res.status}:`, (await res.text()).slice(0, 300));
-      // 401 = bad key, 429 = rate limited. Trying another model won't help.
-      if (res.status === 401 || res.status === 429) break;
-    } catch (err) {
-      lastStatus = 504;
-      console.error(`NVIDIA ${model} request failed:`, err.name, err.message);
     }
   }
 

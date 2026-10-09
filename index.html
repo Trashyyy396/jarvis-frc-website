@@ -2256,6 +2256,7 @@
   .jc-msg.bot { align-self: flex-start; background: var(--dark3); color: var(--silver); border: 1px solid var(--border); border-bottom-left-radius: 3px; }
   .jc-msg.user { align-self: flex-end; background: var(--red); color: #fff; border-bottom-right-radius: 3px; }
   .jc-msg a { color: var(--cyan-bright); }
+  .jc-msg.typing { opacity: 0.65; font-style: italic; }
 
   .jc-chips { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 1rem 0.75rem; }
   .jc-chip {
@@ -2284,6 +2285,7 @@
     letter-spacing: 0.05em; transition: background 0.2s;
   }
   .jc-send:hover { background: var(--cyan-bright); }
+  .jc-send:disabled { opacity: 0.5; cursor: default; }
 
   @media (max-width: 480px) {
     .jarvis-chat { right: 12px; bottom: 84px; width: calc(100vw - 24px); }
@@ -2316,7 +2318,7 @@
   <div class="jc-body" id="jcBody"></div>
   <div class="jc-chips" id="jcChips"></div>
   <div class="jc-input-row">
-    <input class="jc-input" id="jcInput" type="text" placeholder="Ask about the team..." autocomplete="off">
+    <input class="jc-input" id="jcInput" type="text" placeholder="Ask about the team..." autocomplete="off" maxlength="500">
     <button class="jc-send" id="jcSend">Send</button>
   </div>
 </div>
@@ -2392,12 +2394,49 @@
 
   let started = false;
 
+  // AI backend (Netlify Function → NVIDIA). The Firebase /jarvis copy calls the Netlify URL.
+  const AI_URL = /jarvisfrcv\.netlify\.app$/.test(location.hostname)
+    ? '/.netlify/functions/chat'
+    : 'https://jarvisfrcv.netlify.app/.netlify/functions/chat';
+  const history = [];
+  let busy = false;
+  let aiFailures = 0;
+
+  function escapeHtml(s){
+    return s.replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+  }
+
   function addMsg(text, who){
     const d = document.createElement('div');
     d.className = 'jc-msg ' + who;
-    d.innerHTML = text.replace(/(donations@wheelhousefoundationdfw\.com)/g, '<a href="mailto:$1">$1</a>');
+    d.innerHTML = escapeHtml(text).replace(/(donations@wheelhousefoundationdfw\.com)/g, '<a href="mailto:$1">$1</a>');
     body.appendChild(d);
     body.scrollTop = body.scrollHeight;
+    return d;
+  }
+
+  async function askAI(q){
+    if (aiFailures >= 2) return null; // AI is down — stick to built-in answers this visit
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 12000);
+    try {
+      const res = await fetch(AI_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: q, history: history.slice(-6) }),
+        signal: ctrl.signal
+      });
+      const data = res.ok ? await res.json() : null;
+      const reply = data && typeof data.reply === 'string' ? data.reply.trim() : '';
+      if (reply){ aiFailures = 0; return reply; }
+      if (res.status !== 429) aiFailures++;
+      return null;
+    } catch (e) {
+      aiFailures++;
+      return null;
+    } finally {
+      clearTimeout(timer);
+    }
   }
 
   function answer(q){
@@ -2411,9 +2450,26 @@
     return best ? best.a : FALLBACK;
   }
 
-  function respond(q){
+  // Quick-reply chips: instant built-in answer.
+  function respondKB(label, key){
+    if (busy) return;
+    addMsg(label, 'user');
+    setTimeout(() => addMsg(answer(key), 'bot'), 350);
+  }
+
+  // Typed questions: ask the AI, fall back to built-in answers if it's unavailable.
+  async function respond(q){
+    if (busy) return;
+    busy = true;
+    send.disabled = true;
     addMsg(q, 'user');
-    setTimeout(() => addMsg(answer(q), 'bot'), 350);
+    const typing = addMsg('Thinking…', 'bot typing');
+    const reply = await askAI(q);
+    typing.remove();
+    addMsg(reply || answer(q), 'bot');
+    if (reply) history.push({ role: 'user', content: q }, { role: 'assistant', content: reply });
+    busy = false;
+    send.disabled = false;
   }
 
   function renderChips(){
@@ -2422,7 +2478,7 @@
       const c = document.createElement('button');
       c.className = 'jc-chip';
       c.textContent = label;
-      c.onclick = () => respond(q);
+      c.onclick = () => respondKB(label, q);
       chips.appendChild(c);
     });
   }
@@ -2436,8 +2492,14 @@
 
   fab.addEventListener('click', () => chat.classList.contains('open') ? closeChat() : openChat());
   closeBtn.addEventListener('click', closeChat);
-  send.addEventListener('click', () => { if (input.value.trim()){ respond(input.value.trim()); input.value=''; } });
-  input.addEventListener('keydown', e => { if (e.key === 'Enter' && input.value.trim()){ respond(input.value.trim()); input.value=''; } });
+  function submit(){
+    const q = input.value.trim();
+    if (!q || busy) return;
+    input.value = '';
+    respond(q);
+  }
+  send.addEventListener('click', submit);
+  input.addEventListener('keydown', e => { if (e.key === 'Enter') submit(); });
 })();
 </script>
 </body>

@@ -1710,6 +1710,7 @@
     window.addEventListener('mousemove', e => {
       mx = e.clientX; my = e.clientY;
       dot.style.left = mx + 'px'; dot.style.top = my + 'px';
+      
     });
     function loop(){
       rx += (mx - rx) * 0.18; ry += (my - ry) * 0.18;
@@ -2401,6 +2402,7 @@
   const history = [];
   let busy = false;
   let aiFailures = 0;
+  let aiPausedUntil = 0;
 
   function escapeHtml(s){
     return s.replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
@@ -2415,8 +2417,13 @@
     return d;
   }
 
+  function noteAIFailure(){
+    aiFailures++;
+    if (aiFailures >= 2){ aiFailures = 0; aiPausedUntil = Date.now() + 60000; }
+  }
+
   async function askAI(q){
-    if (aiFailures >= 2) return null; // AI is down — stick to built-in answers this visit
+    if (Date.now() < aiPausedUntil) return null; // AI keeps failing: use built-in answers for a minute
     const ctrl = new AbortController();
     const timer = setTimeout(() => ctrl.abort(), 12000);
     try {
@@ -2429,10 +2436,10 @@
       const data = res.ok ? await res.json() : null;
       const reply = data && typeof data.reply === 'string' ? data.reply.trim() : '';
       if (reply){ aiFailures = 0; return reply; }
-      if (res.status !== 429) aiFailures++;
+      noteAIFailure();
       return null;
     } catch (e) {
-      aiFailures++;
+      noteAIFailure();
       return null;
     } finally {
       clearTimeout(timer);
